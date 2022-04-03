@@ -5,12 +5,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import handler.RequestHandler;
+import handler.RequestParameter;
 
 public class WebAppServer {
 
@@ -38,40 +37,10 @@ public class WebAppServer {
                 // リクエスト読み込み
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                // ヘッダ取得
-                String line;
-                StringBuilder header = new StringBuilder();
-                int contentLength = 0;
-
-                while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                    if (line.indexOf("Content-Length:") == 0) {
-                        contentLength = Integer.parseInt(line.substring(line.indexOf(":") + 2));
-                    }
-                    header.append(line + "\n");
-                }
-                System.out.println("-------header-------\n" + header +
-                        "--------------------\n");
-
-                // ボディ取得
-                StringBuilder body = new StringBuilder();
-                if (0 < contentLength) {
-                    char[] c = new char[contentLength];
-                    reader.read(c);
-                    body.append(new String(c));
-                }
-                System.out.println("-------body-------\n" + body + "\n" + "--------------------\n");
-
-                // リクエストハンドラ呼び出し
-                // var requestHandler = new RequestHandler(header, body, contentLength);
+                // リクエストパラメータ取得
+                var requestParam = new RequestParameter(reader);
 
                 // サンプルレスポンス
-                // PrintWriter w = new PrintWriter(
-                // socket.getOutputStream(), true);
-                // w.print("HTTP/1.1 200 OK \n");
-                // w.print("Content-Type: text/html \n");
-                // w.print("\n");
-                // w.print("<h1>Hello World!!</h1>");
-                // w.flush();
                 writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 writer.write("HTTP/1.1 200 OK" + "\n");
                 writer.write("Content-Type: text/html" + "\n");
