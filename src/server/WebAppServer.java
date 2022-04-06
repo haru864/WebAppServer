@@ -2,14 +2,22 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 
-import handler.RequestParameter;
+import handler.HttpRequest;
+import handler.HttpResponse;
 
 public class WebAppServer {
 
@@ -38,14 +46,22 @@ public class WebAppServer {
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 // リクエストパラメータ取得
-                var requestParam = new RequestParameter(reader);
+                HttpRequest httpRequest = new HttpRequest(reader);
 
                 // サンプルレスポンス
                 writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                // HttpResponse httpResponse = new HttpResponse(writer);
                 writer.write("HTTP/1.1 200 OK" + "\n");
-                writer.write("Content-Type: text/html" + "\n");
+                writer.write("Content-Type: text/html; charset=UTF-8" + "\n");
                 writer.write("\n");
                 writer.write("<h1>Hello World!!</h1>");
+                File file = new File("./bin/content/SamplePage.html");
+                FileReader fileIn = new FileReader(file, StandardCharsets.UTF_8);
+                int n;
+                while ((n = fileIn.read()) != -1) {
+                    System.out.println((char) n);
+                    writer.write((char) n);
+                }
                 writer.flush();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class RequestParameter {
+public class HttpRequest {
 
     public StringBuilder header; // リクエストヘッダー
     public StringBuilder body; // リクエストボディ
@@ -16,7 +16,7 @@ public class RequestParameter {
     public ArrayList<String> keyList = new ArrayList<>(); // クエリストリングまたはメッセージボディのKEYリスト
     public HashMap<String, String> paramMap = new HashMap<>(); // クエリストリングまたはメッセージボディのKEYとVALUEのセット
 
-    public RequestParameter(BufferedReader reader) throws NumberFormatException, IOException {
+    public HttpRequest(BufferedReader reader) throws NumberFormatException, IOException {
 
         // ヘッダ取得
         String line;
