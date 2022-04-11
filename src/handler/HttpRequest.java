@@ -13,8 +13,10 @@ public class HttpRequest {
     public String method; // リクエストメソッド
     public String contentPath; // パス名
     public String queryString; // クエリストリング
-    public ArrayList<String> keyList = new ArrayList<>(); // クエリストリングまたはメッセージボディのKEYリスト
-    public HashMap<String, String> paramMap = new HashMap<>(); // クエリストリングまたはメッセージボディのKEYとVALUEのセット
+    public ArrayList<String> keyList; // クエリストリングまたはメッセージボディのKEYリスト
+    public HashMap<String, String> paramMap; // クエリストリングまたはメッセージボディのKEYとVALUEのマップ
+    public ArrayList<String> headerList; // リクエストヘッダーのKEYリスト
+    public HashMap<String, String> headerMap; // リクエストヘッダーのKEYとVALUEのマップ
 
     public HttpRequest(BufferedReader reader) throws NumberFormatException, IOException {
 
@@ -41,13 +43,25 @@ public class HttpRequest {
         System.out.println("-------body-------\n" + body + "\n" + "--------------------\n");
 
         // リクエストパラメータ取得・検証
-        String[] headerList = header.toString().split("\n");
-        method = getMethod(headerList[0]);
-        contentPath = getContentPath(headerList[0]);
-        queryString = getQueryString(headerList[0]);
+        String[] headerArr = header.toString().split("\n");
+        method = getMethod(headerArr[0]);
+        contentPath = getContentPath(headerArr[0]);
+        queryString = getQueryString(headerArr[0]);
         getParameter();
+
+        // リクエストヘッダー取得
+        headerList = new ArrayList<>();
+        headerMap = new HashMap<>();
+        for (int i = 1; i < headerArr.length; i++) {
+            int index = headerArr[i].indexOf(":");
+            String key = headerArr[i].substring(0, index);
+            String value = headerArr[i].substring(index + 2);
+            headerList.add(key);
+            headerMap.put(key, value);
+        }
     }
 
+    // パラメータのKEYリストとマップを生成するメソッド
     public void getParameter() {
         String params = "";
         if (this.method.equals("GET")) {
@@ -57,6 +71,9 @@ public class HttpRequest {
         }
 
         String[] temp = params.split("&");
+        keyList = new ArrayList<>();
+        paramMap = new HashMap<>();
+
         for (String p : temp) {
             String key = p.substring(0, p.indexOf("="));
             String value = p.substring(p.indexOf("=") + 1);
@@ -65,6 +82,7 @@ public class HttpRequest {
         }
     }
 
+    // Method取得メソッド
     public String getMethod(String line) {
         String ret = "";
         int index = line.indexOf(" ");
@@ -72,6 +90,7 @@ public class HttpRequest {
         return ret;
     }
 
+    // パス取得メソッド
     public String getContentPath(String line) {
         String ret = "";
         int head = line.indexOf(" ");
@@ -85,6 +104,7 @@ public class HttpRequest {
         return ret;
     }
 
+    // クエリストリング取得メソッド
     public String getQueryString(String line) {
         String ret = "";
         int tail = line.lastIndexOf(" ");

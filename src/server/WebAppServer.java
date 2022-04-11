@@ -46,9 +46,12 @@ public class WebAppServer {
                 System.out.println("creating response class...");
                 HttpResponse httpResponse = new HttpResponse(writer, httpRequest.contentPath, "200");
                 httpResponse.sendResponse();
+
             } catch (Exception e) {
+
                 e.printStackTrace();
             } finally {
+
                 try {
                     if (reader != null) {
                         reader.close();
@@ -64,6 +67,7 @@ public class WebAppServer {
                     }
                     System.out.println("### SERVER CLOSED ###");
                 } catch (IOException e) {
+
                     e.printStackTrace();
                 }
             }
