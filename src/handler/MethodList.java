@@ -2,7 +2,7 @@ package handler;
 
 import java.util.HashMap;
 
-public class ValidateParameter {
+public class MethodList {
 
     public static String[] allowedMethod = new String[] { "GET", "POST" };
     public static HashMap<String, Boolean> allowedMethodList;

@@ -9,8 +9,11 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import exception.ContentNotFoundException;
+import exception.MethodNotAllowedException;
 import handler.HttpRequest;
 import handler.HttpResponse;
+import handler.RequestHandler;
 
 public class WebAppServer {
 
@@ -35,18 +38,26 @@ public class WebAppServer {
                 // リクエスト待機
                 socket = sSocket.accept();
 
-                // リクエスト読み込み
+                // IO準備
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
                 // リクエストパラメータ取得
                 HttpRequest httpRequest = new HttpRequest(reader);
 
+                // リクエストハンドラ呼び出し
+                RequestHandler requestHandler = new RequestHandler(httpRequest);
+
                 // サンプルレスポンス
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                System.out.println("creating response class...");
                 HttpResponse httpResponse = new HttpResponse(writer, httpRequest.contentPath, "200");
                 httpResponse.sendResponse();
 
+            } catch (MethodNotAllowedException e) {
+
+                e.printStackTrace();
+            } catch (ContentNotFoundException e) {
+
+                e.printStackTrace();
             } catch (Exception e) {
 
                 e.printStackTrace();

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import exception.MethodNotAllowedException;
+
 public class HttpRequest {
 
     public StringBuilder header; // リクエストヘッダー
@@ -18,46 +20,50 @@ public class HttpRequest {
     public ArrayList<String> headerList; // リクエストヘッダーのKEYリスト
     public HashMap<String, String> headerMap; // リクエストヘッダーのKEYとVALUEのマップ
 
-    public HttpRequest(BufferedReader reader) throws NumberFormatException, IOException {
+    public HttpRequest(BufferedReader reader) throws NumberFormatException, IOException, MethodNotAllowedException {
 
         // ヘッダ取得
         String line;
-        header = new StringBuilder();
-        contentLength = 0;
+        this.header = new StringBuilder();
+        this.contentLength = 0;
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
             if (line.indexOf("Content-Length:") == 0) {
-                contentLength = Integer.parseInt(line.substring(line.indexOf(":") + 2));
+                this.contentLength = Integer.parseInt(line.substring(line.indexOf(":") + 2));
             }
-            header.append(line + "\n");
+            this.header.append(line + "\n");
         }
-        System.out.println("-------header-------\n" + header +
+        System.out.println("-------header-------\n" + this.header +
                 "--------------------\n");
 
         // ボディ取得
-        body = new StringBuilder();
-        if (0 < contentLength) {
-            char[] c = new char[contentLength];
+        this.body = new StringBuilder();
+        if (0 < this.contentLength) {
+            char[] c = new char[this.contentLength];
             reader.read(c);
-            body.append(new String(c));
+            this.body.append(new String(c));
         }
-        System.out.println("-------body-------\n" + body + "\n" + "--------------------\n");
+        System.out.println("-------body-------\n" + this.body + "\n" + "--------------------\n");
 
         // リクエストパラメータ取得・検証
         String[] headerArr = header.toString().split("\n");
-        method = getMethod(headerArr[0]);
-        contentPath = getContentPath(headerArr[0]);
-        queryString = getQueryString(headerArr[0]);
-        getParameter();
+        this.method = getMethod(headerArr[0]);
+        this.contentPath = getContentPath(headerArr[0]);
+        this.queryString = getQueryString(headerArr[0]);
+        if (MethodList.validateMethod(this.method) == true) {
+            getParameter();
+        } else {
+            throw new MethodNotAllowedException();
+        }
 
         // リクエストヘッダー取得
-        headerList = new ArrayList<>();
-        headerMap = new HashMap<>();
+        this.headerList = new ArrayList<>();
+        this.headerMap = new HashMap<>();
         for (int i = 1; i < headerArr.length; i++) {
             int index = headerArr[i].indexOf(":");
             String key = headerArr[i].substring(0, index);
             String value = headerArr[i].substring(index + 2);
-            headerList.add(key);
-            headerMap.put(key, value);
+            this.headerList.add(key);
+            this.headerMap.put(key, value);
         }
     }
 
