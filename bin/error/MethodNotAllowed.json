@@ -1,0 +1,5 @@
+{
+    "status" : 405,
+    "reason": "Method Not Allowed",
+    "message":"Request Mwthod is not allowed. Change Request Method."
+}

@@ -1,5 +1,0 @@
-{
-    "status" : 405,
-    "error": "Method Not Allowed",
-    "detail": "allowedMethodList"
-}

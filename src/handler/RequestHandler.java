@@ -2,25 +2,28 @@ package handler;
 
 import java.io.File;
 
-import exception.ContentNotFoundException;
+import exception.NotFoundException;
 import exception.MethodNotAllowedException;
+import parameter.HttpRequest;
+import parameter.MethodList;
 
 public class RequestHandler {
 
     public int STATUS_CODE;
     public String pathName;
 
-    public RequestHandler(HttpRequest httpRequest) throws MethodNotAllowedException, ContentNotFoundException {
+    public RequestHandler(HttpRequest httpRequest) throws MethodNotAllowedException, NotFoundException {
 
         // メソッド検証
-        if (MethodList.validateMethod(httpRequest.method) != true) {
+        if (!MethodList.validateMethod(httpRequest.method)) {
             throw new MethodNotAllowedException();
         }
 
         // パス検証
-        File requestContent = new File("./bin/content" + httpRequest.contentPath);
-        if (requestContent.exists() != true) {
-            throw new ContentNotFoundException();
+        String path = "./bin/content" + httpRequest.contentPath;
+        File requestContent = new File(path);
+        if (!requestContent.exists()) {
+            throw new NotFoundException();
         }
     }
 }

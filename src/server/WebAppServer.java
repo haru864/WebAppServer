@@ -9,11 +9,12 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import exception.ContentNotFoundException;
+import exception.NotFoundException;
 import exception.MethodNotAllowedException;
-import handler.HttpRequest;
-import handler.HttpResponse;
+import handler.ErrorHandler;
 import handler.RequestHandler;
+import parameter.HttpRequest;
+import parameter.HttpResponse;
 
 public class WebAppServer {
 
@@ -52,15 +53,10 @@ public class WebAppServer {
                 HttpResponse httpResponse = new HttpResponse(writer, httpRequest.contentPath, "200");
                 httpResponse.sendResponse();
 
-            } catch (MethodNotAllowedException e) {
-
-                e.printStackTrace();
-            } catch (ContentNotFoundException e) {
-
-                e.printStackTrace();
             } catch (Exception e) {
 
-                e.printStackTrace();
+                ErrorHandler errorHandler = new ErrorHandler(e);
+
             } finally {
 
                 try {
