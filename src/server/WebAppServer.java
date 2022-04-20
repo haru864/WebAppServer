@@ -19,6 +19,7 @@ import parameter.HttpResponse;
 public class WebAppServer {
 
     public final static int PortHttp = 8080;
+    public final static String HTTP_Ver = "HTTP/1.1";
 
     public static void main(String[] args) {
 
@@ -56,6 +57,8 @@ public class WebAppServer {
             } catch (Exception e) {
 
                 ErrorHandler errorHandler = new ErrorHandler(e);
+                if (writer != null)
+                    errorHandler.sendError(writer);
 
             } finally {
 
