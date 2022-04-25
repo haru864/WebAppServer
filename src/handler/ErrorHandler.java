@@ -12,7 +12,7 @@ public class ErrorHandler {
 
     public Exception exception;
     public String jsonName;
-    public File ErrorJson;
+    public File errorJson;
 
     public ErrorHandler(Exception e) {
 
@@ -27,7 +27,7 @@ public class ErrorHandler {
         this.jsonName = temp.substring(n + 1, m);
 
         // エラーJSONファイルを取得する
-        this.ErrorJson = new File("./bin/error/" + this.jsonName + ".json");
+        this.errorJson = new File("./bin/error/" + this.jsonName + ".json");
     }
 
     public void sendError(BufferedWriter w) {
@@ -49,7 +49,7 @@ public class ErrorHandler {
 
             // メッセージボディ生成
             int length = 0;
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(this.ErrorJson));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(this.errorJson));
             String temp = "";
             while ((temp = bufferedReader.readLine()) != null) {
                 length += temp.length();
@@ -67,6 +67,28 @@ public class ErrorHandler {
     }
 
     public String getValueFromErrorJson(String targetKey) {
-        return "";
+        String ret = "";
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.errorJson))) {
+
+            String temp = "";
+            String target = "\"" + targetKey + "\"";
+
+            while ((temp = bufferedReader.readLine()) != null) {
+                if (temp.indexOf(target) == -1)
+                    continue;
+                if (targetKey == "status") {
+                    ret = temp.substring(temp.indexOf(":") + 2, temp.indexOf(","));
+                } else {
+                    ret = temp.substring(temp.indexOf(":") + 3, temp.indexOf(",") - 1);
+                }
+            }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        return ret;
     }
 }
