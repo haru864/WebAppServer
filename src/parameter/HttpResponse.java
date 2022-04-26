@@ -19,6 +19,7 @@ public class HttpResponse {
     // レスポンスヘッダー
     public String contentType;
     public String contentLength;
+    public String contentLocation;
     public StringBuilder header;
 
     // レスポンスボディ
@@ -38,6 +39,7 @@ public class HttpResponse {
         String extension = contentPath.substring(index + 1);
         this.contentType = "Content-Type: " + ContentType.CONTENT_TYPE_MAP.get(extension);
         this.contentLength = "Content-Length: ";
+        this.contentLocation = "Content-Location: " + contentPath.substring(contentPath.indexOf(".\\bin") + 5);
 
         // レスポンスボディ
         this.messageBody = new StringBuilder();
@@ -54,6 +56,7 @@ public class HttpResponse {
         this.contentLength += length;
         this.header.append(this.contentType + "\n");
         this.header.append(this.contentLength + "\n");
+        this.header.append(this.contentLocation + "\n");
     }
 
     // レスポンス送信メソッド

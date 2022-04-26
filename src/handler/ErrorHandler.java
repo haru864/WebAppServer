@@ -37,26 +37,27 @@ public class ErrorHandler {
             String statusCode = getValueFromErrorJson("status");
             String reasonPhrase = getValueFromErrorJson("reason");
             String statusLine = WebAppServer.HTTP_Ver + " " + statusCode + " " + reasonPhrase;
-            w.append(statusLine + "\n");
 
             // ヘッダー生成
             StringBuffer responseHeader = new StringBuffer();
             responseHeader.append("Content-Type: application/json; charset=UTF-8" + "\n");
-            responseHeader.append("Content-Location: /error/" + this.jsonName + ".json" + "\n");
-            responseHeader.append("\n");
-            w.append(responseHeader + "\n");
-            w.append("\n");
+            responseHeader.append("Content-Location: \\error\\" + this.jsonName + ".json" + "\n");
 
             // メッセージボディ生成
             int length = 0;
             BufferedReader bufferedReader = new BufferedReader(new FileReader(this.errorJson));
             String temp = "";
+            StringBuffer bs = new StringBuffer();
             while ((temp = bufferedReader.readLine()) != null) {
                 length += temp.length();
-                w.append(temp);
+                bs.append(temp);
             }
 
             responseHeader.append("Content-Length: " + length);
+            w.append(statusLine + "\n");
+            w.append(responseHeader + "\n");
+            w.append("\n");
+            w.append(bs);
             w.flush();
             w.close();
 

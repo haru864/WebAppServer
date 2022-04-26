@@ -44,7 +44,6 @@ public class RequestHandler {
         if (index == -1) {
             path.append("." + this.extension);
         }
-        System.out.println(path.toString());
         requestContent = new File(path.toString());
         if (!requestContent.exists()) {
             throw new NotFoundException();
