@@ -41,7 +41,7 @@ public class HttpResponse {
 
         // レスポンスボディ
         this.messageBody = new StringBuilder();
-        File responseFile = new File("./bin/content" + contentPath);
+        File responseFile = new File(contentPath);
         FileReader fileIn = new FileReader(responseFile);
         int n = 0;
         int length = 0;

@@ -9,8 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import exception.NotFoundException;
-import exception.MethodNotAllowedException;
 import handler.ErrorHandler;
 import handler.RequestHandler;
 import parameter.HttpRequest;
@@ -51,7 +49,7 @@ public class WebAppServer {
                 RequestHandler requestHandler = new RequestHandler(httpRequest);
 
                 // サンプルレスポンス
-                HttpResponse httpResponse = new HttpResponse(writer, httpRequest.contentPath, "200");
+                HttpResponse httpResponse = new HttpResponse(writer, requestHandler.requestContent.toString(), "200");
                 httpResponse.sendResponse();
 
             } catch (Exception e) {
@@ -76,6 +74,7 @@ public class WebAppServer {
                         sSocket.close();
                     }
                     System.out.println("### SERVER CLOSED ###");
+
                 } catch (IOException e) {
 
                     e.printStackTrace();
