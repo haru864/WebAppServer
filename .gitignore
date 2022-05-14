@@ -1,5 +1,7 @@
 # 検証用
 temp/
+src/test
+bin/test
 
 # 備忘
 idea.txt
